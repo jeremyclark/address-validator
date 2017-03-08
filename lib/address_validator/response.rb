@@ -41,11 +41,16 @@ module AddressValidator
     end
 
     def addresses
-      if response['AddressKeyFormat'].is_a? Array
-        addresses = response['AddressKeyFormat'].map { |address| AddressValidator::Address.from_xml(address) }
+      if success?
+        if response['AddressKeyFormat'].is_a? Array
+          addresses = response['AddressKeyFormat'].map { |address| AddressValidator::Address.from_xml(address) }
+        else
+          addresses = [ AddressValidator::Address.from_xml(response['AddressKeyFormat']) ]
+        end
       else
-        addresses = [ AddressValidator::Address.from_xml(response['AddressKeyFormat']) ]
+        addresses = []
       end
+      addresses
     end
 
     def address
